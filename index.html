@@ -591,8 +591,13 @@ table{border-collapse:separate!important;border-spacing:0!important;border:1px s
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Tenor:</label>
+                            <label id="labelPjmTenor">Tenor:</label>
                             <input type="number" id="pjmTenor" min="1" max="60" value="12" required>
+                        </div>
+                        <div class="form-group" id="groupSetoranHarian" style="display:none;">
+                            <label for="pjmSetoranHarian">Setoran per Hari (Rp):</label>
+                            <input type="number" id="pjmSetoranHarian" min="1" step="500" placeholder="Contoh: 10000">
+                            <small style="color:#64748b;margin-top:5px;">Isi target setoran harian untuk menghitung perkiraan lama angsuran.</small>
                         </div>
                         <div class="form-group">
                             <label id="labelPjmBunga">Bunga / Bulan (%):</label>
@@ -1001,9 +1006,10 @@ table{border-collapse:separate!important;border-spacing:0!important;border:1px s
         }
 
         document.getElementById("pjmJenis").addEventListener("change", updateJenisPinjaman);
-        document.getElementById("pjmNominal").addEventListener("input", tampilkanRincianPinjaman);
+        document.getElementById("pjmNominal").addEventListener("input", () => { hitungTenorDariSetoran(); tampilkanRincianPinjaman(); });
         document.getElementById("pjmTenor").addEventListener("input", tampilkanRincianPinjaman);
-        document.getElementById("pjmBunga").addEventListener("input", tampilkanRincianPinjaman);
+        document.getElementById("pjmBunga").addEventListener("input", () => { hitungTenorDariSetoran(); tampilkanRincianPinjaman(); });
+        document.getElementById("pjmSetoranHarian").addEventListener("input", () => { hitungTenorDariSetoran(); tampilkanRincianPinjaman(); });
 
         document.getElementById("trxNasabah").addEventListener("change", updateSaldoTransaksiForm);
         document.getElementById("trxJenis").addEventListener("change", updateSaldoTransaksiForm);
@@ -1254,10 +1260,32 @@ table{border-collapse:separate!important;border-spacing:0!important;border:1px s
             const jenis = document.getElementById("pjmJenis").value;
             const harian = jenis === "Harian";
             document.getElementById("labelPjmBunga").textContent = harian ? "Bunga / Hari (%):" : "Bunga / Bulan (%):";
+            document.getElementById("labelPjmTenor").textContent = harian ? "Lama Angsuran (hari):" : "Tenor (bulan):";
+            document.getElementById("groupSetoranHarian").style.display = harian ? "flex" : "none";
             document.getElementById("pjmBunga").value = harian ? "1" : "1.2";
-            document.getElementById("pjmTenor").max = harian ? "365" : "60";
+            document.getElementById("pjmTenor").max = harian ? "3650" : "60";
             document.getElementById("pjmTenor").value = harian ? "10" : "12";
+            if (harian) hitungTenorDariSetoran();
             tampilkanRincianPinjaman();
+        }
+
+        // Untuk pinjaman harian, estimasi hari dihitung dari setoran harian.
+        // Bunga harian dihitung berdasarkan persentase dari pokok pinjaman.
+        function hitungTenorDariSetoran() {
+            const jenis = document.getElementById("pjmJenis").value;
+            if (jenis !== "Harian") return;
+            const nominal = Number(document.getElementById("pjmNominal").value) || 0;
+            const setoran = Number(document.getElementById("pjmSetoranHarian").value) || 0;
+            const bunga = Number(document.getElementById("pjmBunga").value) || 0;
+            if (!nominal || !setoran) return;
+            const bungaHarian = nominal * bunga / 100;
+            const pembayaranPokokHarian = setoran - bungaHarian;
+            if (pembayaranPokokHarian <= 0) {
+                document.getElementById("rincianPinjaman").innerHTML = '<strong style="color:#b91c1c">Setoran harian harus lebih besar dari bunga harian (' + formatRp(bungaHarian) + ').</strong>';
+                return;
+            }
+            const hari = Math.ceil(nominal / pembayaranPokokHarian);
+            document.getElementById("pjmTenor").value = Math.min(3650, hari);
         }
 
         function tampilkanRincianPinjaman() {
@@ -1269,9 +1297,13 @@ table{border-collapse:separate!important;border-spacing:0!important;border:1px s
             const box=document.getElementById("rincianPinjaman");
             if(!nominal||!tenor){box.innerHTML="Masukkan plafond dan tenor untuk melihat rincian tagihan.";return;}
             const r=hitungPinjaman(nominal,tenor,bunga,jenis);
-            box.innerHTML=`<div><strong>Pokok Pinjaman:</strong> ${formatRp(nominal)}</div><div><strong>Jenis:</strong> ${jenis}</div><div><strong>Tenor:</strong> ${tenor} ${satuan}</div><div><strong>Pokok / ${satuan}:</strong> ${formatRp(r.pokokPerPeriode)}</div><div><strong>Bunga / ${satuan}:</strong> ${formatRp(r.bungaPerPeriode)} (${bunga}%)</div><div style="font-size:16px;color:#1f4e78;"><strong>Tagihan / ${satuan}: ${formatRp(r.tagihanPerPeriode)}</strong></div><div><strong>Total Bunga:</strong> ${formatRp(r.totalBunga)}</div><div style="font-size:16px;color:#198754;"><strong>Total Tagihan: ${formatRp(r.totalTagihan)}</strong></div>`;
+            const setoran = Number(document.getElementById("pjmSetoranHarian").value)||0;
+            const bulanPerkiraan = (tenor/30).toLocaleString('id-ID',{maximumFractionDigits:2});
+            let tambahan = jenis === "Harian"
+                ? `<div><strong>Setoran target per hari:</strong> ${setoran ? formatRp(setoran) : 'Belum diisi'}</div><div><strong>Perkiraan lama angsuran:</strong> ${tenor} hari (± ${bulanPerkiraan} bulan, asumsi 30 hari/bulan)</div><div><strong>Perkiraan setoran rata-rata:</strong> ${formatRp(r.totalTagihan/tenor)} per hari</div>`
+                : '';
+            box.innerHTML=`<div><strong>Pokok Pinjaman:</strong> ${formatRp(nominal)}</div><div><strong>Jenis:</strong> ${jenis}</div><div><strong>Tenor:</strong> ${tenor} ${satuan}</div>${tambahan}<div><strong>Pokok / ${satuan}:</strong> ${formatRp(r.pokokPerPeriode)}</div><div><strong>Bunga / ${satuan}:</strong> ${formatRp(r.bungaPerPeriode)} (${bunga}%)</div><div style="font-size:16px;color:#1f4e78;"><strong>Tagihan / ${satuan}: ${formatRp(r.tagihanPerPeriode)}</strong></div><div><strong>Total Bunga:</strong> ${formatRp(r.totalBunga)}</div><div style="font-size:16px;color:#198754;"><strong>Total Tagihan: ${formatRp(r.totalTagihan)}</strong></div>`;
         }
-
 
         function getPembayaranPinjaman(kodePjm) {
             return listPembayaran.filter(x => x.pinjamanKode === kodePjm);
@@ -1322,8 +1354,8 @@ table{border-collapse:separate!important;border-spacing:0!important;border:1px s
                     <div style="display:flex;justify-content:space-between;padding:5px 0;"><span>Tanggal</span><b>${p.tgl || "-"}</b></div>
                     <hr style="border:0;border-top:1px dashed #555;margin:12px 0;">
                     <div style="display:flex;justify-content:space-between;padding:5px 0;"><span>Jumlah Pinjaman</span><b>${formatRp(p.nominal)}</b></div>
-                    <div style="display:flex;justify-content:space-between;padding:5px 0;"><span>Tenor</span><b>${p.tenor} bulan</b></div>
-                    <div style="display:flex;justify-content:space-between;padding:5px 0;"><span>Bunga</span><b>${p.bunga}% / bulan</b></div>
+                    <div style="display:flex;justify-content:space-between;padding:5px 0;"><span>Tenor</span><b>${p.tenor} ${(p.jenisPinjaman || "Bulanan") === "Harian" ? "hari (± " + (p.tenor/30).toLocaleString("id-ID",{maximumFractionDigits:2}) + " bulan)" : "bulan"}</b></div>
+                    <div style="display:flex;justify-content:space-between;padding:5px 0;"><span>Bunga</span><b>${p.bunga}% / ${(p.jenisPinjaman || "Bulanan") === "Harian" ? "hari" : "bulan"}</b></div>
                     <div style="display:flex;justify-content:space-between;padding:5px 0;"><span>Pokok / Bulan</span><b>${formatRp(r.pokokPerBulan)}</b></div>
                     <div style="display:flex;justify-content:space-between;padding:5px 0;"><span>Bunga / Bulan</span><b>${formatRp(r.bungaPerBulan)}</b></div>
                     <div style="display:flex;justify-content:space-between;padding:7px 0;font-size:14px;"><b>Tagihan / Bulan</b><b>${formatRp(r.tagihanPerBulan)}</b></div>
@@ -1494,7 +1526,8 @@ table{border-collapse:separate!important;border-spacing:0!important;border:1px s
 
             if (!kodeNsb) { alert("Silakan pilih nasabah."); return; }
             if (!nominal || nominal < 100000) { alert("Plafond pinjaman minimal Rp 100.000."); return; }
-            if (!tenor || tenor < 1 || tenor > (jenisPinjaman === "Harian" ? 365 : 60)) { alert(jenisPinjaman === "Harian" ? "Tenor harus 1 sampai 365 hari." : "Tenor harus 1 sampai 60 bulan."); return; }
+            if (!tenor || tenor < 1 || tenor > (jenisPinjaman === "Harian" ? 3650 : 60)) { alert(jenisPinjaman === "Harian" ? "Tenor harus 1 sampai 3650 hari." : "Tenor harus 1 sampai 60 bulan."); return; }
+            if (jenisPinjaman === "Harian" && !(Number(document.getElementById("pjmSetoranHarian").value) > 0)) { alert("Masukkan setoran per hari, misalnya Rp 10.000."); return; }
             if (!Number.isFinite(bunga) || bunga < 0) { alert("Bunga tidak valid."); return; }
 
             if (editKode) {
@@ -1506,6 +1539,7 @@ table{border-collapse:separate!important;border-spacing:0!important;border:1px s
                     pjm.nominal = nominal;
                     pjm.tenor = tenor;
                     pjm.bunga = bunga;
+                    pjm.setoranHarian = jenisPinjaman === "Harian" ? (Number(document.getElementById("pjmSetoranHarian").value) || 0) : 0;
                     const rincian = hitungPinjaman(nominal, tenor, bunga, jenisPinjaman);
                     pjm.pokokPerBulan = rincian.pokokPerBulan;
                     pjm.bungaPerBulan = rincian.bungaPerBulan;
@@ -1522,7 +1556,7 @@ table{border-collapse:separate!important;border-spacing:0!important;border:1px s
                 let today = new Date().toISOString().split('T')[0];
 
                 const rincian = hitungPinjaman(nominal, tenor, bunga, jenisPinjaman);
-                listPinjaman.push({kode:kodePjm,nasabahKode:kodeNsb,tgl:today,jenisPinjaman:jenisPinjaman,tenor:tenor,nominal:nominal,bunga:bunga,pokokPerBulan:rincian.pokokPerPeriode,bungaPerBulan:rincian.bungaPerPeriode,tagihanPerBulan:rincian.tagihanPerPeriode,totalBunga:rincian.totalBunga,totalTagihan:rincian.totalTagihan,status:"Aktif"});
+                listPinjaman.push({kode:kodePjm,nasabahKode:kodeNsb,tgl:today,jenisPinjaman:jenisPinjaman,tenor:tenor,nominal:nominal,bunga:bunga,setoranHarian:jenisPinjaman === "Harian" ? (Number(document.getElementById("pjmSetoranHarian").value) || 0) : 0,pokokPerBulan:rincian.pokokPerPeriode,bungaPerBulan:rincian.bungaPerPeriode,tagihanPerBulan:rincian.tagihanPerPeriode,totalBunga:rincian.totalBunga,totalTagihan:rincian.totalTagihan,status:"Aktif"});
                 alert(`Pengajuan Pinjaman ${kodePjm} Berhasil Disimpan!\n\nJenis: ${jenisPinjaman}\nTenor: ${tenor} ${jenisPinjaman === "Harian" ? "hari" : "bulan"}\nTagihan per periode: ${formatRp(rincian.tagihanPerPeriode)}\nTotal tagihan: ${formatRp(rincian.totalTagihan)}`);
                 // Bukti pinjaman TIDAK dibuka otomatis. Tekan tombol "Bukti Pinjaman" pada tabel.
             }
@@ -1543,6 +1577,9 @@ table{border-collapse:separate!important;border-spacing:0!important;border:1px s
             document.getElementById("pjmTenor").value = pjm.tenor;
             document.getElementById("pjmBunga").value = pjm.bunga;
             document.getElementById("labelPjmBunga").textContent = (pjm.jenisPinjaman === "Harian") ? "Bunga / Hari (%):" : "Bunga / Bulan (%):";
+            document.getElementById("labelPjmTenor").textContent = (pjm.jenisPinjaman === "Harian") ? "Lama Angsuran (hari):" : "Tenor (bulan):";
+            document.getElementById("groupSetoranHarian").style.display = (pjm.jenisPinjaman === "Harian") ? "flex" : "none";
+            document.getElementById("pjmSetoranHarian").value = pjm.jenisPinjaman === "Harian" ? (pjm.setoranHarian || Math.ceil(hitungPinjaman(pjm.nominal,pjm.tenor,pjm.bunga,"Harian").totalTagihan / pjm.tenor)) : "";
             tampilkanRincianPinjaman();
 
             document.getElementById("titleFormPinjaman").textContent = "Edit Data Pinjaman (" + pjm.kode + ")";
@@ -1556,6 +1593,9 @@ table{border-collapse:separate!important;border-spacing:0!important;border:1px s
             document.getElementById("pjmJenis").value = "Bulanan";
             document.getElementById("pjmBunga").value = "1.2";
             document.getElementById("pjmTenor").value = "12";
+            document.getElementById("pjmSetoranHarian").value = "";
+            document.getElementById("groupSetoranHarian").style.display = "none";
+            document.getElementById("labelPjmTenor").textContent = "Tenor (bulan):";
             document.getElementById("editKodePinjaman").value = "";
             document.getElementById("titleFormPinjaman").textContent = "Pengajuan Pinjaman";
             document.getElementById("btnSubmitPinjaman").textContent = "➕ Ajukan Pinjaman";
