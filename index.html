@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simpan Pinjam Toko Zizan</title>
+    <title>Simpan Pinjam Toko Zizan — Manajemen Nasabah Harian</title>
     <style>
         /* --- RESET & GLOBAL STYLES --- */
         * {
@@ -370,6 +370,10 @@ header h1{position:relative;z-index:1;font-size:25px;letter-spacing:.4px;text-sh
 table{border-collapse:separate!important;border-spacing:0!important;border:1px solid var(--line);border-radius:12px;overflow:hidden}th{background:#f1f5f9!important;color:#475569!important;font-size:11px!important;text-transform:uppercase;letter-spacing:.4px}td,th{padding:11px 10px!important;border-bottom:1px solid var(--line)!important}tbody tr:hover{background:#f8fbff}
 .badge{border-radius:999px!important;padding:4px 9px!important;font-size:11px!important;font-weight:700}.alert{border-radius:12px!important}
 @media(max-width:700px){header{text-align:center;padding:20px 14px 28px}header h1{font-size:20px}.container{margin-top:-12px}.nav-tabs{border-radius:15px}.tab-btn{min-height:44px;padding:9px 13px}.tab-content{padding:16px;border-radius:15px}.dashboard-grid{grid-template-columns:1fr!important}.form-grid{grid-template-columns:1fr!important}.btn-container{flex-wrap:wrap}.btn{flex:1 1 auto}}
+.daily-hero{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:24px;border-radius:20px;background:radial-gradient(circle at 85% 10%,rgba(96,165,250,.32),transparent 30%),linear-gradient(135deg,#0f172a,#1e3a8a);color:#fff;margin-bottom:18px;box-shadow:0 16px 35px rgba(30,58,138,.18)}
+.daily-hero h2{color:#fff!important;font-size:24px;margin:5px 0 8px}.daily-hero p{color:#dbeafe;line-height:1.6;max-width:620px}.daily-eyebrow{font-size:10px;letter-spacing:2px;font-weight:800;color:#93c5fd}.daily-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin:16px 0 22px}.daily-stat{padding:18px;border:1px solid #e2e8f0;border-radius:16px;background:linear-gradient(145deg,#fff,#f8fafc);box-shadow:0 8px 20px rgba(15,23,42,.04);min-width:0}.daily-stat span,.daily-toolbar label{display:block;color:#64748b;font-size:12px;font-weight:700;margin-bottom:8px}.daily-stat strong{display:block;font-size:clamp(19px,2.3vw,27px);letter-spacing:-.5px;color:#1d4ed8;overflow-wrap:anywhere}.daily-stat small{display:block;color:#94a3b8;font-size:11px;margin-top:7px}.daily-toolbar{display:flex;align-items:end;gap:12px;flex-wrap:wrap;padding:17px;border:1px solid #e2e8f0;background:#f8fafc;border-radius:16px;margin-bottom:14px}.daily-toolbar>div{min-width:150px}.daily-toolbar .daily-search{flex:1;min-width:230px}.daily-toolbar input,.daily-toolbar select{width:100%;min-height:42px;padding:10px 12px;border:1px solid #cbd5e1;border-radius:10px;background:#fff}.daily-note{padding:13px 15px;border-radius:12px;background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe;font-size:13px;line-height:1.6;margin-bottom:14px}.daily-table-wrap{border-radius:14px}.daily-table{min-width:1050px}.daily-table td{vertical-align:middle}.daily-customer-name{font-weight:800;color:#0f172a}.daily-customer-code{font-size:11px;color:#64748b;margin-top:4px}.daily-money{font-weight:750;white-space:nowrap}.daily-status{display:inline-block;border-radius:99px;padding:5px 9px;font-size:11px;font-weight:800;white-space:nowrap}.daily-status.active{background:#fff7ed;color:#c2410c}.daily-status.paid{background:#dcfce7;color:#166534}.daily-footnote{font-size:11px;color:#64748b;line-height:1.6;margin-top:12px}.daily-actions{display:flex;gap:6px;flex-wrap:wrap}.daily-actions .btn{white-space:nowrap}
+@media(max-width:760px){.daily-hero{align-items:flex-start;flex-direction:column;padding:19px}.daily-hero h2{font-size:21px}.daily-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.daily-stat{padding:14px}.daily-toolbar{align-items:stretch}.daily-toolbar>div,.daily-toolbar .daily-search{width:100%;min-width:100%}.daily-toolbar .btn{width:100%}}
+@media print{.daily-hero button,.daily-toolbar,.nav-tabs,header,.daily-note{display:none!important}.tab-content{display:none!important}#nasabahHarian{display:block!important;box-shadow:none!important;border:0!important}.daily-stats{grid-template-columns:repeat(4,1fr)}.daily-table{min-width:0;font-size:9px}.daily-table td,.daily-table th{padding:5px!important}.daily-actions{display:none!important}}
 
 </style>
 
@@ -424,6 +428,7 @@ table{border-collapse:separate!important;border-spacing:0!important;border:1px s
     <!-- Header Banner -->
     <header>
         <h1>SIMPAN PINJAM TOKO ZIZAN</h1>
+        <p style="margin-top:7px;color:#dbeafe;font-size:13px;letter-spacing:.3px">Manajemen nasabah, pinjaman, dan setoran harian</p>
     </header>
 
     
@@ -434,6 +439,7 @@ table{border-collapse:separate!important;border-spacing:0!important;border:1px s
             <button class="tab-btn" onclick="openTab(event, 'nasabah')">👤 Data Nasabah</button>
             <button class="tab-btn" onclick="openTab(event, 'transaksi')">💰 Setor / Tarik Tunai</button>
             <button class="tab-btn" onclick="openTab(event, 'pinjaman')">📋 Pinjaman</button>
+            <button class="tab-btn" onclick="openTab(event, 'nasabahHarian'); renderNasabahHarian();">📆 Nasabah Harian</button>
             <button class="tab-btn" onclick="openTab(event, 'cetak')">🖨️ Cetak Struk / Kwitansi</button>
         </div>
 
@@ -568,6 +574,22 @@ table{border-collapse:separate!important;border-spacing:0!important;border:1px s
 
         <!-- TAB 4: DATA PINJAMAN -->
         <div id="pinjaman" class="tab-content">
+            <div class="form-section" style="margin-bottom:18px;">
+                <h3>🔎 Pencarian Nasabah untuk Pinjaman</h3>
+                <p style="color:#64748b;margin:6px 0 12px;">Cari nasabah berdasarkan kode, nama, NIK, atau nomor WhatsApp/telepon, lalu pilih untuk mengisi formulir pinjaman.</p>
+                <form onsubmit="event.preventDefault(); cariNasabahUntukPinjaman();" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+                    <input type="search" id="cariNasabahPinjaman" placeholder="Ketik kode, nama, NIK, atau nomor telepon..." aria-label="Cari nasabah untuk pinjaman" style="flex:1;min-width:220px;padding:12px;border:1px solid #cbd5e1;border-radius:8px;">
+                    <button type="submit" class="btn btn-primary">🔎 Cari Nasabah</button>
+                    <button type="button" class="btn btn-secondary" onclick="resetCariNasabahPinjaman()">Reset</button>
+                </form>
+                <div class="table-responsive" style="margin-top:12px;">
+                    <table>
+                        <thead><tr><th>Kode</th><th>Nama Nasabah</th><th>NIK</th><th>No. Telepon</th><th>Saldo</th><th>Aksi</th></tr></thead>
+                        <tbody id="hasilCariNasabahPinjaman"><tr><td colspan="6" style="text-align:center;color:#64748b;">Ketik kata kunci lalu tekan Cari Nasabah.</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
             <div class="form-section">
                 <h3 id="titleFormPinjaman">Pengajuan Pinjaman</h3>
                 <form id="formPinjaman" onsubmit="prosesPinjaman(event)">
@@ -596,7 +618,7 @@ table{border-collapse:separate!important;border-spacing:0!important;border:1px s
                         </div>
                         <div class="form-group" id="groupSetoranHarian" style="display:none;">
                             <label for="pjmSetoranHarian">Setoran per Hari (Rp):</label>
-                            <input type="number" id="pjmSetoranHarian" min="1" step="500" placeholder="Contoh: 10000">
+                            <input type="number" id="pjmSetoranHarian" min="0" step="500" placeholder="Contoh: 10000">
                             <small style="color:#64748b;margin-top:5px;">Isi target setoran harian untuk menghitung perkiraan lama angsuran.</small>
                         </div>
                         <div class="form-group">
@@ -636,7 +658,39 @@ table{border-collapse:separate!important;border-spacing:0!important;border:1px s
             </div>
         </div>
 
-        <!-- TAB 5: CETAK STRUK / KWITANSI -->
+        <!-- TAB KHUSUS: MONITORING NASABAH HARIAN -->
+        <div id="nasabahHarian" class="tab-content">
+            <div class="daily-hero">
+                <div>
+                    <div class="daily-eyebrow">PUSAT PENAGIHAN</div>
+                    <h2>Toko Zizan</h2>
+                    <p>jln raya pringgabaya blok dolog rt10/rw03 ds.kapringan kec.krangkeng indramayu.</p>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="openTabByName('pinjaman')">＋ Buat Pinjaman Harian</button>
+            </div>
+            <div class="daily-stats">
+                <div class="daily-stat"><span>Nasabah harian aktif</span><strong id="harianAktif">0</strong><small>Pinjaman belum lunas</small></div>
+                <div class="daily-stat"><span>Target setoran / hari</span><strong id="harianTarget">Rp 0</strong><small>Total target semua nasabah aktif</small></div>
+                <div class="daily-stat"><span>Pembayaran hari ini</span><strong id="harianDibayarHariIni">Rp 0</strong><small>Total pembayaran tercatat hari ini</small></div>
+                <div class="daily-stat"><span>Total sisa tagihan</span><strong id="harianSisa">Rp 0</strong><small>Untuk seluruh pinjaman harian</small></div>
+            </div>
+            <div class="daily-toolbar">
+                <div class="daily-search"><label for="cariHarian">Cari nasabah</label><input id="cariHarian" type="search" placeholder="Nama, kode nasabah, nomor telepon, atau kode pinjaman…" oninput="renderNasabahHarian()"></div>
+                <div><label for="filterStatusHarian">Status</label><select id="filterStatusHarian" onchange="renderNasabahHarian()"><option value="Semua">Semua status</option><option value="Aktif">Aktif / belum lunas</option><option value="Lunas">Lunas</option></select></div>
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('cariHarian').value='';document.getElementById('filterStatusHarian').value='Semua';renderNasabahHarian();">Reset</button>
+                <button type="button" class="btn btn-info" onclick="window.print()">🖨️ Cetak halaman</button>
+            </div>
+            <div class="daily-note">💡 <strong>Tips:</strong> gunakan tombol <em>Bayar Setoran</em> untuk mencatat pembayaran. Setelah disimpan, aplikasi akan menampilkan bukti pembayaran yang bisa dicetak atau dikirim lewat WhatsApp.</div>
+            <div class="table-responsive daily-table-wrap">
+                <table class="daily-table">
+                    <thead><tr><th>Nasabah</th><th>Kontak</th><th>Tanggal Pinjam</th><th>Pokok Pinjaman</th><th>Target / Hari</th><th>Total Dibayar</th><th>Sisa Tagihan</th><th>Status</th><th>Aksi</th></tr></thead>
+                    <tbody id="tblNasabahHarian"><tr><td colspan="9" style="text-align:center;padding:25px!important">Memuat data nasabah harian…</td></tr></tbody>
+                </table>
+            </div>
+            <p class="daily-footnote">Perhitungan mengikuti data pinjaman dan pembayaran yang tersimpan di aplikasi. Pastikan aturan bunga, target setoran, dan kesepakatan dengan nasabah sudah benar.</p>
+        </div>
+
+        <!-- TAB 6: CETAK STRUK / KWITANSI -->
         <div id="cetak" class="tab-content">
             <div style="text-align: right; margin-bottom: 15px;" class="no-print">
                 <button onclick="window.print()" class="btn btn-info">🖨️ Cetak Struk 58mm / PDF</button>
@@ -1009,6 +1063,70 @@ table{border-collapse:separate!important;border-spacing:0!important;border:1px s
             });
 
             updateDropdowns();
+            renderNasabahHarian();
+        }
+
+        function openTabByName(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            const panel = document.getElementById(tabName);
+            if (panel) panel.classList.add('active');
+            const button = [...document.querySelectorAll('.tab-btn')].find(el => el.getAttribute('onclick') && el.getAttribute('onclick').includes("'" + tabName + "'"));
+            if (button) button.classList.add('active');
+            if (tabName === 'nasabahHarian') renderNasabahHarian();
+            window.scrollTo({top:0, behavior:'smooth'});
+        }
+
+        function tanggalHariIniID() {
+            const d = new Date();
+            return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear();
+        }
+
+        function renderNasabahHarian() {
+            const body = document.getElementById('tblNasabahHarian');
+            if (!body) return;
+            const keyword = (document.getElementById('cariHarian')?.value || '').trim().toLowerCase();
+            const statusFilter = document.getElementById('filterStatusHarian')?.value || 'Semua';
+            const harian = listPinjaman.filter(p => (p.jenisPinjaman || 'Bulanan') === 'Harian');
+            const aktif = harian.filter(p => getSisaTagihanPinjaman(p) > 0);
+            const target = aktif.reduce((sum,p) => sum + Number(p.setoranHarian || hitungPinjaman(p.nominal,p.tenor,p.bunga,p.jenisPinjaman,p.setoranHarian).tagihanPerPeriode || 0),0);
+            const sisaSemua = harian.reduce((sum,p) => sum + getSisaTagihanPinjaman(p),0);
+            const prefix = tanggalHariIniID();
+            const dibayarHariIni = listPembayaran.filter(b => String(b.tgl || '').startsWith(prefix)).reduce((sum,b) => {
+                const p = harian.find(x => x.kode === b.pinjamanKode);
+                return sum + (p ? Number(b.nominal || 0) : 0);
+            },0);
+            document.getElementById('harianAktif').textContent = aktif.length;
+            document.getElementById('harianTarget').textContent = formatRp(target);
+            document.getElementById('harianDibayarHariIni').textContent = formatRp(dibayarHariIni);
+            document.getElementById('harianSisa').textContent = formatRp(sisaSemua);
+
+            const rows = harian.filter(p => {
+                const n = listNasabah.find(x => x.kode === p.nasabahKode) || {};
+                const haystack = [p.kode,p.nasabahKode,n.nama,n.tlp,n.nik].join(' ').toLowerCase();
+                const status = getSisaTagihanPinjaman(p) <= 0 ? 'Lunas' : 'Aktif';
+                return (!keyword || haystack.includes(keyword)) && (statusFilter === 'Semua' || status === statusFilter);
+            }).slice().reverse();
+            if (!rows.length) {
+                body.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:28px!important;color:#64748b">${harian.length ? 'Tidak ada data yang cocok dengan pencarian atau filter.' : 'Belum ada pinjaman harian. Buat pinjaman dengan memilih jenis Harian di menu Pinjaman.'}</td></tr>`;
+                return;
+            }
+            body.innerHTML = rows.map(p => {
+                const n = listNasabah.find(x => x.kode === p.nasabahKode) || {};
+                const totalBayar = getTotalBayarPinjaman(p.kode);
+                const sisa = getSisaTagihanPinjaman(p);
+                const status = sisa <= 0 ? 'Lunas' : 'Aktif';
+                const targetHarian = Number(p.setoranHarian || hitungPinjaman(p.nominal,p.tenor,p.bunga,p.jenisPinjaman,p.setoranHarian).tagihanPerPeriode || 0);
+                const safe = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+                return `<tr>
+                    <td><div class="daily-customer-name">${safe(n.nama || 'Nama tidak ditemukan')}</div><div class="daily-customer-code">${safe(p.nasabahKode)} · ${safe(p.kode)}</div></td>
+                    <td>${safe(n.tlp || '-')}</td><td>${safe(p.tgl || '-')}</td>
+                    <td class="daily-money">${formatRp(p.nominal)}</td><td class="daily-money">${formatRp(targetHarian)}</td>
+                    <td class="daily-money">${formatRp(totalBayar)}</td><td class="daily-money" style="color:${sisa <= 0 ? '#15803d' : '#b91c1c'}">${formatRp(sisa)}</td>
+                    <td><span class="daily-status ${status === 'Lunas' ? 'paid' : 'active'}">${status}</span></td>
+                    <td><div class="daily-actions"><button type="button" class="btn btn-success btn-sm" onclick="bukaFormBayar('${safe(p.kode)}')" ${sisa <= 0 ? 'disabled' : ''}>💵 Bayar Setoran</button><button type="button" class="btn btn-info btn-sm" onclick="cetakStrukPinjaman('${safe(p.kode)}')">🧾 Bukti</button></div></td>
+                </tr>`;
+            }).join('');
         }
 
         document.getElementById("pjmJenis").addEventListener("change", updateJenisPinjaman);
@@ -1450,32 +1568,85 @@ table{border-collapse:separate!important;border-spacing:0!important;border:1px s
         }
 
 
-        function cetakStrukTagihan(kodePjm, pembayaranBaru = 0) {
+        function nomorWhatsAppIndonesia(nomor) {
+            let angka = String(nomor || "").replace(/\D/g, "");
+            if (angka.startsWith("0")) angka = "62" + angka.slice(1);
+            else if (angka.startsWith("8")) angka = "62" + angka;
+            return angka;
+        }
+
+        function kirimStrukWhatsApp(kodePjm, pembayaranBaru, kodeBayar) {
+            const p = listPinjaman.find(x => x.kode === kodePjm);
+            if (!p) return;
+            const nsb = listNasabah.find(n => n.kode === p.nasabahKode);
+            if (!nsb || !nsb.tlp) {
+                alert("Nomor WhatsApp nasabah belum diisi. Silakan lengkapi nomor di menu Data Nasabah.");
+                return;
+            }
+            const nomorWA = nomorWhatsAppIndonesia(nsb.tlp);
+            if (nomorWA.length < 10) {
+                alert("Nomor WhatsApp nasabah tidak valid. Periksa nomor di Data Nasabah.");
+                return;
+            }
+            const r = hitungPinjaman(p.nominal, p.tenor, p.bunga, p.jenisPinjaman, p.setoranHarian);
+            const totalBayar = getTotalBayarPinjaman(kodePjm);
+            const sisa = Math.max(0, r.totalTagihan - totalBayar);
+            const tanggal = new Date().toLocaleString("id-ID");
+            const teks = [
+                "*BUKTI PEMBAYARAN - SIMPAN PINJAM TOKO ZIZAN*",
+                "No. Pembayaran: " + (kodeBayar || "-"),
+                "No. Pinjaman: " + p.kode,
+                "Nama Nasabah: " + nsb.nama,
+                "Tanggal: " + tanggal,
+                "Jenis Pinjaman: " + (p.jenisPinjaman || "Bulanan"),
+                "Pembayaran diterima: " + formatRp(pembayaranBaru),
+                "Total sudah dibayar: " + formatRp(totalBayar),
+                "Sisa tagihan: " + formatRp(sisa),
+                (p.jenisPinjaman === "Harian" ? "Setoran harian: " + formatRp(p.setoranHarian || r.tagihanPerPeriode) : "Tagihan per bulan: " + formatRp(r.tagihanPerPeriode)),
+                "Status: " + (sisa <= 0 ? "LUNAS" : "AKTIF"),
+                "Terima kasih. Simpan bukti pembayaran ini."
+            ].join("\n");
+            window.open("https://wa.me/" + nomorWA + "?text=" + encodeURIComponent(teks), "_blank");
+        }
+
+        function cetakStrukTagihan(kodePjm, pembayaranBaru = 0, kodeBayar = "") {
             const p = listPinjaman.find(x => x.kode === kodePjm);
             if (!p) return;
             const nsb = listNasabah.find(n => n.kode === p.nasabahKode);
             const r = hitungPinjaman(p.nominal, p.tenor, p.bunga, p.jenisPinjaman, p.setoranHarian);
             const totalBayar = getTotalBayarPinjaman(kodePjm);
             const sisa = Math.max(0, r.totalTagihan - totalBayar);
+            const tanggal = new Date().toLocaleString("id-ID");
+            const jenis = p.jenisPinjaman || "Bulanan";
+            const periode = jenis === "Harian" ? "Hari" : "Bulan";
+            const setoranHarian = Number(p.setoranHarian || 0);
 
             document.getElementById("tagihanStruk").innerHTML = `
-                <div class="receipt-header">
-                    <h2>STRUK PEMBAYARAN TAGIHAN</h2>
-                    <p>Koperasi Simpan Pinjam</p>
+                <div class="receipt-box" style="width:58mm;max-width:58mm;margin:0 auto;font-family:'Courier New',monospace;font-size:10.5px;padding:2mm;">
+                    <div class="receipt-header">
+                        <h2>STRUK PEMBAYARAN</h2>
+                        <p>SIMPAN PINJAM TOKO ZIZAN</p>
+                    </div>
+                    <div class="receipt-row"><span>No. Bayar</span><strong>${kodeBayar || "-"}</strong></div>
+                    <div class="receipt-row"><span>No. Pinjaman</span><strong>${p.kode}</strong></div>
+                    <div class="receipt-row"><span>Kode Nasabah</span><strong>${p.nasabahKode}</strong></div>
+                    <div class="receipt-row"><span>Nama</span><strong>${nsb ? nsb.nama : p.nasabahKode}</strong></div>
+                    <div class="receipt-row"><span>Tanggal Bayar</span><span>${tanggal}</span></div>
+                    <hr>
+                    <div class="receipt-row"><span>Jenis Pinjaman</span><strong>${jenis}</strong></div>
+                    ${jenis === "Harian" ? `<div class="receipt-row"><span>Setoran Harian</span><strong>${formatRp(setoranHarian || r.tagihanPerPeriode)}</strong></div>` : ""}
+                    <div class="receipt-row"><span>Total Tagihan</span><strong>${formatRp(r.totalTagihan)}</strong></div>
+                    <div class="receipt-row"><span>Pembayaran Ini</span><strong>${formatRp(pembayaranBaru)}</strong></div>
+                    <div class="receipt-row"><span>Total Sudah Dibayar</span><strong>${formatRp(totalBayar)}</strong></div>
+                    <div class="receipt-row"><span>Sisa Tagihan</span><strong>${formatRp(sisa)}</strong></div>
+                    <div class="receipt-row"><span>Status</span><strong>${sisa <= 0 ? "LUNAS" : "AKTIF"}</strong></div>
+                    <hr>
+                    <p style="text-align:center;margin-top:10px;">Terima kasih atas pembayaran Anda.</p>
                 </div>
-                <div class="receipt-row"><span>No. Pinjaman</span><strong>${p.kode}</strong></div>
-                <div class="receipt-row"><span>Nasabah</span><strong>${nsb ? nsb.nama : p.nasabahKode}</strong></div>
-                <div class="receipt-row"><span>Tanggal</span><span>${new Date().toLocaleString("id-ID")}</span></div>
-                <hr>
-                <div class="receipt-row"><span>Total Tagihan</span><strong>${formatRp(r.totalTagihan)}</strong></div>
-                <div class="receipt-row"><span>Pembayaran Ini</span><strong>${formatRp(pembayaranBaru)}</strong></div>
-                <div class="receipt-row"><span>Total Sudah Dibayar</span><strong>${formatRp(totalBayar)}</strong></div>
-                <div class="receipt-row"><span>Sisa Tagihan</span><strong style="color:${sisa > 0 ? '#dc3545' : '#198754'}">${formatRp(sisa)}</strong></div>
-                <hr>
-                <div class="receipt-row"><span>Jenis Pinjaman</span><strong>${p.jenisPinjaman || "Bulanan"}</strong></div>
-                <div class="receipt-row"><span>Tagihan / ${p.jenisPinjaman === "Harian" ? "Hari" : "Bulan"}</span><strong>${formatRp(r.tagihanPerPeriode)}</strong></div>
-                <div class="receipt-row"><span>Tenor</span><span>${p.tenor} ${p.jenisPinjaman === "Harian" ? "hari" : "bulan"}</span></div>
-                <p style="text-align:center;margin-top:20px;">Terima kasih</p><div style="text-align:center;margin-top:15px;"><button type="button" onclick="printStrukTagihan()" class="btn btn-primary">Print Struk</button></div>
+                <div class="receipt-actions no-print" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px auto;">
+                    <button type="button" onclick="printStrukTagihan()" class="btn btn-primary">🖨️ Cetak Struk 58mm</button>
+                    <button type="button" onclick="kirimStrukWhatsApp('${p.kode}', ${Number(pembayaranBaru) || 0}, '${String(kodeBayar || "").replace(/'/g, "\\'")}')" class="btn btn-success">📲 Kirim ke WhatsApp Nasabah</button>
+                </div>
             `;
             document.querySelectorAll(".tab-btn")[4].click();
         }
@@ -1512,7 +1683,7 @@ table{border-collapse:separate!important;border-spacing:0!important;border:1px s
             tutupFormBayar();
             renderAll();
             syncAfterChange();
-            cetakStrukTagihan(kodePjm,nominal);
+            cetakStrukTagihan(kodePjm,nominal,nomor);
         }
 
         function printStrukTagihan() {
@@ -1653,6 +1824,67 @@ table{border-collapse:separate!important;border-spacing:0!important;border:1px s
             document.getElementById("st-saldo").textContent = formatRp(getSaldoNasabah(kodeNasabah));
             document.getElementById("st-ttd").textContent = `( ${namaLengkap || '___________'} )`;
         }
+
+        // Pencarian nasabah langsung dari data nasabah yang dimuat dari Supabase.
+        function escapeHTMLPinjaman(value) {
+            return String(value ?? '').replace(/[&<>"']/g, ch => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[ch]));
+        }
+
+        function cariNasabahUntukPinjaman() {
+            const input = document.getElementById('cariNasabahPinjaman');
+            const tbody = document.getElementById('hasilCariNasabahPinjaman');
+            if (!input || !tbody) return;
+            const kata = input.value.trim().toLocaleLowerCase('id-ID');
+            if (!kata) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#64748b;">Masukkan kode, nama, NIK, atau nomor telepon nasabah.</td></tr>';
+                return;
+            }
+            const hasil = listNasabah.filter(n => [n.kode, n.nama, n.nik, n.tlp]
+                .some(v => String(v ?? '').toLocaleLowerCase('id-ID').includes(kata)));
+            if (!hasil.length) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#b91c1c;">Nasabah tidak ditemukan.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = hasil.map(n => `<tr>
+                <td>${escapeHTMLPinjaman(n.kode)}</td>
+                <td>${escapeHTMLPinjaman(n.nama)}</td>
+                <td>${escapeHTMLPinjaman(n.nik || '-')}</td>
+                <td>${escapeHTMLPinjaman(n.tlp || '-')}</td>
+                <td>${formatRp(getSaldoNasabah(n.kode))}</td>
+                <td><button type="button" class="btn btn-primary btn-pilih-nasabah-pinjaman" data-kode="${escapeHTMLPinjaman(n.kode)}">Pilih</button></td>
+            </tr>`).join('');
+        }
+
+        function pilihNasabahUntukPinjaman(kode) {
+            const select = document.getElementById('pjmNasabah');
+            const nasabah = listNasabah.find(n => String(n.kode) === String(kode));
+            if (!nasabah) {
+                alert('Data nasabah tidak ditemukan. Coba muat ulang data.');
+                return;
+            }
+            // Pastikan opsi sudah terisi sebelum memilih nasabah.
+            updateDropdowns();
+            select.value = nasabah.kode;
+            document.getElementById('pjmNominal').focus();
+            document.getElementById('formPinjaman').scrollIntoView({behavior:'smooth', block:'start'});
+            const inputCari = document.getElementById('cariNasabahPinjaman');
+            if (inputCari) inputCari.value = `${nasabah.kode} - ${nasabah.nama}`;
+            alert(`Nasabah ${nasabah.nama} berhasil dipilih untuk pengajuan pinjaman.`);
+        }
+
+        function resetCariNasabahPinjaman() {
+            const input = document.getElementById('cariNasabahPinjaman');
+            const tbody = document.getElementById('hasilCariNasabahPinjaman');
+            if (input) input.value = '';
+            if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#64748b;">Ketik kata kunci lalu tekan Cari Nasabah.</td></tr>';
+        }
+
+        document.addEventListener('click', function(event) {
+            const tombol = event.target.closest('.btn-pilih-nasabah-pinjaman');
+            if (tombol) pilihNasabahUntukPinjaman(tombol.dataset.kode);
+        });
 
         // Init App On Load
         window.onload = async function() {
