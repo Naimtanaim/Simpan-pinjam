@@ -1500,7 +1500,7 @@ table{border-collapse:separate!important;border-spacing:0!important;border:1px s
                     <div style="display:flex;justify-content:space-between;padding:5px 0;"><span>Bunga</span><b>${p.bunga}% / ${(p.jenisPinjaman || "Bulanan") === "Harian" ? "hari" : "bulan"}</b></div>
                     <div style="display:flex;justify-content:space-between;padding:5px 0;"><span>Pokok / Hari</span><b>${formatRp(r.pokokPerBulan)}</b></div>
                     <div style="display:flex;justify-content:space-between;padding:5px 0;"><span>Bunga / Hari</span><b>${formatRp(r.bungaPerBulan)}</b></div>
-                    <div style="display:flex;justify-content:space-between;padding:7px 0;font-size:14px;"><b>Tagihan / Hari</b><b>${formatRp(r.tagihanPerHari)}</b></div>
+                    <div style="display:flex;justify-content:space-between;padding:7px 0;font-size:14px;"><b>Tagihan / Hari</b><b>${formatRp(r.tagihanPerBulan)}</b></div>
                     <div style="display:flex;justify-content:space-between;padding:7px 0;font-size:14px;"><b>Total Tagihan</b><b>${formatRp(r.totalTagihan)}</b></div>
                     <div style="display:flex;justify-content:space-between;padding:5px 0;"><span>Status</span><b>${p.status || "Aktif"}</b></div>
                     <hr style="border:0;border-top:1px dashed #555;margin:12px 0;">
