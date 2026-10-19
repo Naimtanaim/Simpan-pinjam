@@ -462,6 +462,10 @@ table{border-collapse:separate!important;border-spacing:0!important;border:1px s
                     <div class="card-header">TOTAL PINJAMAN DISALURKAN</div>
                     <div class="card-body" id="dash-pinjaman">Rp 0</div>
                 </div>
+                <div class="card">
+                    <div class="card-header">TOTAL KESELURUHAN PEMBAYARAN NASABAH</div>
+                    <div class="card-body" id="dash-total-dibayar">Rp 0</div>
+                </div>
             </div>
         </div>
 
@@ -996,6 +1000,10 @@ table{border-collapse:separate!important;border-spacing:0!important;border:1px s
 
             let totalPjm = listPinjaman.reduce((sum, p) => sum + Number(p.nominal), 0);
             document.getElementById("dash-pinjaman").textContent = formatRp(totalPjm);
+
+            // Total seluruh pembayaran/angsuran yang sudah dibayarkan nasabah.
+            let totalDibayarNasabah = listPembayaran.reduce((sum, b) => sum + Number(b.nominal || 0), 0);
+            document.getElementById("dash-total-dibayar").textContent = formatRp(totalDibayarNasabah);
 
             // Table Nasabah
             let tbodyNsb = document.getElementById("tblNasabah");
